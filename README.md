@@ -7,7 +7,7 @@ Se propone realizar una página web que calcule la letra del número de DNI intr
 De acuerdo con la web del Ministerio del Interior el algoritmo para calcular el DNI es el siguiente; se divide el número entre 23 y el resto se sustituye por una letra que se determina por inspección mediante la siguiente tabla:
 
 
-![Screenshot](LetrasDNI..png)
+![Screenshot](LetrasDNI.png)
 
 Por ejemplo, si el número del DNI es 12345678 al dividirlo entre 23 da un resto de 14, luego la letra sería la Z: el resultado sería 12345678Z.
 
