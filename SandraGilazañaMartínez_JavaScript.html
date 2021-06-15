@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandra Gilazaña Martínez</title>
+    
+</head>
+<style type="text/css">
+     :root {
+        --primario: #9c2780;
+        --primarioOscuro: #89119D;
+        --secundario: #FFCE00;
+        --secundarioOscuro: rgb(233, 187, 2);
+        --blanco: #FFF;
+        --negro: #000;
+        --verde: rgb(74, 185, 0);
+        --rojo: rgb(185, 0, 0);
+        --fuenteDocument: 'Courier New', Courier, monospace;
+        --fuenteHeading: Arial, Helvetica, sans-serif;
+    }
+    
+    html {
+        box-sizing: border-box;
+        font-size: 62, 5%;
+    }
+    
+    *,
+    *:before,
+    *:after {
+        box-sizing: inherit;
+    }
+    /*Globales*/
+    
+    body {
+        background-color: var(--primarioOscuro);
+        color: var(--secundario);
+        font-family: var(--fuenteDocument);
+        line-height: 3;
+        text-align: center;
+    }
+    
+    h1 {
+        font-size: 3rem;
+    }
+    
+    .formulario input {
+        background-color: var(--primario);
+        margin: 0 auto;
+        color: var(--secundario);
+        max-width: 80rem;
+        width: 35%;
+        text-align: center;
+    }
+    
+    .boton {
+        display: block;
+        background-color: var(--secundarioOscuro);
+        color: var(--primarioOscuro);
+        text-align: center;
+        margin: 0 auto;
+        padding: 2rem 3rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+        margin-top: 2rem;
+        border: none;
+    }
+    
+    .incorrecto {
+        background-color: var(--rojo);
+        padding: 1rem .5rem;
+        text-align: center;
+        color: var(--negro);
+        font-size: 1.5rem;
+    }
+    
+    .correcto {
+        background-color: var(--verde);
+        padding: 1rem .5rem;
+        text-align: center;
+        color: var(--blanco);
+        font-size: 3rem;
+    }
+</style>
+
+
+<body>
+    <h1 class="header" id="change">Compruebe su DNI</h1>
+    <!--//Se ha de solicitar un número y una letra de DNI al usuario.-->
+    <div class="formulario">
+        <input type="text" name="user_dni" id="user_dni" placeholder="01234567L" onkeyup="presionkey(event);">
+    </div>
+    <div>
+        <input class="boton" type="submit" value="Comprobar" onclick="check_DNI();">
+    </div>
+
+
+
+    <script>
+        /*
+                El programa ha de cumplir los siguientes requisitos:
+                */
+        function check_DNI() {
+            /* Variables que vamos a necesitar*/
+            // Guardamos el DNI proporcionado
+            var user_DNI = document.getElementById("user_dni").value;
+            //variable para Guardar numero DNI
+            /*Guardamos el numero con la funcion substr, le decimos q coja desde el caracter 0,
+            todo lo q ocupe menos la última posición que corresponde a la letra*/
+            var number_DNI = user_DNI.substr(0, user_DNI.length - 1);
+            //variable para Guardar letra DNI
+            /* En este caso es al revés nos situamos en la última penúltima posición y le decimos
+            que recoja el último caracter que corresponderá a la letra*/
+            var letter_DNI = user_DNI.substr(user_DNI.length - 1, 1);
+            /* Vamos a cambiar la letra introducida en minúsculas por mayúsculas */
+            letter_DNI = letter_DNI.toUpperCase();
+            //Se usará un array para almacenar las diferentes letras.
+            var letter_Answer = 'TRWAGMYFPDXBNJZSQVHLCKET';
+
+
+
+            /*No se debe permitir una entrada vacía ni una entrada no numérica en el caso del número de DNI,
+            ni una entrada numérica y superior a un carácter en el caso de la letra. 
+            Se ha de permitir el uso de letras mayúsculas y minúsculas. */
+
+            rules_DNI = /^\d{8}[a-zA-Z]$/;
+
+            //Se deben validar las entradas del usuario.
+            /* Reglas para el campo del DNI desde JS y no desde html, para ello
+            utilizaré más adelante un condicional. Utilizaré el método .test() con 
+            la user_DNI rules_DNI y como parámetro el DNI introducido por el usuario, 
+            en caso de que sea verdadero(devuelve un booleano) entrará en el bucle 
+            y comenzaremos analizar los datos, de esta forma cumplo todos los requerimientos
+            del enunciado*/
+            if (rules_DNI.test(user_DNI) == true) {
+                /* calcular el módulo */
+                var aux = number_DNI % 23;
+                console.log(letter_Answer[aux]);
+                /*guardamos en letter_Answer la posición donde deberíamos encontrarnos
+                para ese Dni, es decir la posicion de la letra que corresponde al array,
+                dejando así un array de una sola posición, osea una variable */
+                letter_Answer = letter_Answer.substring(aux, aux + 1);
+                /*Comparamos la letra que tenemos , si es correcta o no */
+                if (letter_Answer != letter_DNI) {
+                    mostrarError('Dni erroneo, la letra del NIF no se corresponde'); //mensaje a mostrar con el DOM
+                    document.getElementById("user_dni").value = null; //borrado de datos
+
+                } else {
+                    mostrarMensaje(`DNI: ${number_DNI} con la letra: ${letter_DNI} es correcto`);
+                    document.getElementById("user_dni").value = null; //borrado de datos
+                }
+            } else {
+                console.log(number_DNI);
+                console.log(letter_DNI);
+                alert("DNI no válido");
+                document.getElementById("user_dni").value = null; //borrado de datos
+            }
+        }
+        //Funcion para que reaccione la casilla del input al darle al enter
+        function presionkey(e) {
+            if (e.keyCode == 13) {
+                check_DNI();
+            }
+        }
+        //Se mostrará en la propia página la letra resultado (utilizando funciones del DOM) 
+        /*Creamos la variable para llamar acceder a la parte del formulario */
+        const formulario = document.querySelector('.formulario');
+        //Si la letra introducida por el usuario no coincide con la calculada se mostrará 
+        //en la propia página con un formato "h3" en rojo
+        /*Creamos una funcion que crea el elemento  'h3', despues una alerta con contenido de texto, el cual 
+        va a ser el mensaje que le pasemos. Después le añade la clase incorreco y le añade la alerta.
+        Por último esta va a tener una duración de 3 seg. momento en el que se podrá volver a utilizar el programa */
+        function mostrarError(mensaje) {
+            const alerta = document.createElement('h3');
+            alerta.textContent = mensaje;
+            alerta.classList.add('incorrecto');
+            formulario.appendChild(alerta);
+            setTimeout(() => {
+                alerta.remove();
+            }, 3000);
+        }
+
+        /*Lo mismo que la anterior, pero con 'h1' */
+        //usando un tipo de letra grande, mínimo "h1".
+        //el mensaje en verde en caso contrario
+        function mostrarMensaje(mensaje) {
+            const alerta = document.createElement('h1');
+            alerta.textContent = mensaje;
+            alerta.classList.add('correcto');
+            formulario.appendChild(alerta);
+            setTimeout(() => {
+                alerta.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
